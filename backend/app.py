@@ -10,14 +10,8 @@ print(verify_connection())
 
 app = Flask(__name__)
 
-CORS(app, resources={
-    r"/*": {
-        "origins": [
-            "http://localhost:5173",
-            "https://graph-job-ai.vercel.app"
-        ]
-    }
-})
+CORS(app)
+
 
 app.register_blueprint(jobs_bp)
 app.register_blueprint(users_bp)
