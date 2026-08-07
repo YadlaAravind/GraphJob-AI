@@ -68,48 +68,39 @@ def add_skills():
 
 
 @users_bp.route("/login", methods=["POST"])
+@users_bp.route("/login", methods=["POST"])
 def login():
 
     data = request.get_json()
 
     email = data["email"]
-
+    password = data["password"]
 
     session = get_session()
 
-
     result = session.run("""
-        MATCH (u:User {email:$email})
-
+        MATCH (u:User {email:$email, password:$password})
         RETURN u.name AS name,
                u.email AS email
-
     """,
-    email=email)
-
-
+    email=email,
+    password=password)
 
     user = result.single()
 
-
     session.close()
 
-
     if user:
-
         return {
-            "status":"success",
-            "message":"Login Successful",
-            "user":{
-                "name":user["name"],
-                "email":user["email"]
+            "status": "success",
+            "message": "Login Successful",
+            "user": {
+                "name": user["name"],
+                "email": user["email"]
             }
         }
 
-
-    else:
-
-        return {
-            "status":"failed",
-            "message":"User Not Found"
-        },404
+    return {
+        "status": "failed",
+        "message": "Invalid Email or Password"
+    }, 401
