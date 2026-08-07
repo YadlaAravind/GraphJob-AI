@@ -34,38 +34,33 @@ export default function Register() {
 
   async function handleSubmit(e){
 
-    e.preventDefault();
+  e.preventDefault();
 
+  try{
 
-    try{
+    const response = await axios.post(
+      `${import.meta.env.VITE_API_URL}/register`,
+      userData
+    );
 
-      const response = await axios.post(
-        "http://127.0.0.1:5000/register",
-        userData
-      );
+    console.log(response.data);
 
+    setMessage("Registration Successful");
 
-      console.log(response.data);
+    setTimeout(() => {
+      navigate("/login");
+    }, 1000);
 
-      setMessage("Registration Successful");
+  }
+  catch(error){
 
-     setTimeout(() => {
-    navigate("/login");
-  }, 1000);
+    console.log(error);
 
-
-
-    }
-    catch(error){
-
-      console.log(error);
-
-      setMessage("Registration Failed");
-
-    }
+    setMessage("Registration Failed");
 
   }
 
+}
 
 
   return (
