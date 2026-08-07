@@ -4,95 +4,80 @@ import { useParams } from "react-router-dom";
 
 export default function JobDetails() {
 
-    const { title } = useParams();
+  const { title } = useParams();
 
-    const [job, setJob] = useState(null);
+  const [job, setJob] = useState(null);
 
-    useEffect(() => {
+  useEffect(() => {
+    getJobDetails();
+  }, [title]);
 
-        getJobDetails();
+  async function getJobDetails() {
 
-    }, []);
+    try {
 
-    async function getJobDetails() {
+      const decodedTitle = decodeURIComponent(title);
 
-        try {
+      const response = await axios.get(
+        `https://graphjob-backend.onrender.com/job/${decodedTitle}`
+      );
 
-            const decodedTitle = decodeURIComponent(title);
+      console.log(response.data);
 
-            const response = await axios.get(
-                `http://127.0.0.1:5000/job/${decodedTitle}`
-            );
+      if (response.data.status === "success") {
+        setJob(response.data.job);
+      }
 
-            setJob(response.data.job);
+    } catch (error) {
 
-        }
-        catch (error) {
-
-            console.log(error);
-
-        }
+      console.error(error);
 
     }
 
-    return (
+  }
 
-        <div className="container my-5">
+  return (
 
-            {
-                job ? (
+    <div className="container my-5">
 
-                    <div className="card shadow">
+      {
+        job ? (
 
-                        <div className="card-body">
+          <div className="card shadow">
 
-                            <h2>
-                                {job.title}
-                            </h2>
+            <div className="card-body">
 
-                            <h5>
-                                Company: {job.company}
-                            </h5>
+              <h2>{job.title}</h2>
 
-                            <hr />
+              <h5>Company: {job.company}</h5>
 
-                            <h5>
-                                Required Skills
-                            </h5>
+              <hr />
 
-                            <ul>
+              <h5>Required Skills</h5>
 
-                                {
-                                    job.skills.map((skill, index) => (
+              <ul>
+                {job.skills.map((skill, index) => (
+                  <li key={index}>{skill}</li>
+                ))}
+              </ul>
 
-                                        <li key={index}>
-                                            {skill}
-                                        </li>
+              <button className="btn btn-success">
+                Apply Now
+              </button>
 
-                                    ))
-                                }
+            </div>
 
-                            </ul>
+          </div>
 
-                            <button className="btn btn-success">
-                                Apply Now
-                            </button>
+        ) : (
 
-                        </div>
+          <h4>Loading Job Details...</h4>
 
-                    </div>
+        )
+      }
 
-                ) : (
+    </div>
 
-                    <h4>
-                        Loading Job Details...
-                    </h4>
-
-                )
-            }
-
-        </div>
-
-    );
+  );
 
 }
