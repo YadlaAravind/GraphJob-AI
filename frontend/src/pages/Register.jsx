@@ -2,106 +2,93 @@ import React, { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
+const API = "https://graphjob-backend.onrender.com";
 
 export default function Register() {
 
   const navigate = useNavigate();
 
-
   const [userData, setUserData] = useState({
-  name: "",
-  email: "",
-  password: ""
-});
+    name: "",
+    email: "",
+    password: "",
+  });
 
+  const [message, setMessage] = useState("");
 
-  const [message,setMessage] = useState("");
-
-
-
-  function handleChange(e){
-
-    const {name,value} = e.target;
+  function handleChange(e) {
+    const { name, value } = e.target;
 
     setUserData({
       ...userData,
-      [name]:value
+      [name]: value,
     });
-
   }
 
+  async function handleSubmit(e) {
+    e.preventDefault();
 
+    try {
 
-  async function handleSubmit(e){
+      const response = await axios.post(
+        `${API}/register`,
+        userData
+      );
 
-  e.preventDefault();
+      console.log(response.data);
 
-  try{
+      if (response.data.status === "success") {
 
-    const response = await axios.post(
-      `${import.meta.env.VITE_API_URL}/register`,
-      userData
-    );
+        setMessage("✅ Registration Successful");
 
-    console.log(response.data);
+        setTimeout(() => {
+          navigate("/login");
+        }, 1000);
 
-    setMessage("Registration Successful");
+      } else {
 
-    setTimeout(() => {
-      navigate("/login");
-    }, 1000);
+        setMessage(response.data.message);
 
+      }
+
+    } catch (error) {
+
+      console.error(error);
+
+      if (error.response) {
+        setMessage(error.response.data.message || "Registration Failed");
+      } else {
+        setMessage("Server Error");
+      }
+
+    }
   }
-  catch(error){
-
-    console.log(error);
-
-    setMessage("Registration Failed");
-
-  }
-
-}
-
 
   return (
-
     <div className="container my-5">
-
 
       <div className="row justify-content-center">
 
-
         <div className="col-md-5">
-
 
           <div className="card shadow">
 
-
             <div className="card-body">
-
 
               <h3 className="text-center mb-4">
                 Register
               </h3>
 
-
-              {
-                message &&
+              {message && (
                 <div className="alert alert-info">
                   {message}
                 </div>
-              }
-
-
+              )}
 
               <form onSubmit={handleSubmit}>
 
-
                 <div className="mb-3">
-
-                  <label className="form-label">
-                    Name
-                  </label>
+                  <label className="form-label">Name</label>
 
                   <input
                     type="text"
@@ -109,18 +96,12 @@ export default function Register() {
                     name="name"
                     value={userData.name}
                     onChange={handleChange}
-                    placeholder="Enter name"
+                    required
                   />
-
                 </div>
 
-
-
                 <div className="mb-3">
-
-                  <label className="form-label">
-                    Email
-                  </label>
+                  <label className="form-label">Email</label>
 
                   <input
                     type="email"
@@ -128,52 +109,40 @@ export default function Register() {
                     name="email"
                     value={userData.email}
                     onChange={handleChange}
-                    placeholder="Enter email"
+                    required
                   />
-
                 </div>
 
                 <div className="mb-3">
+                  <label className="form-label">Password</label>
 
-             <label className="form-label">
-                 Password
-              </label>
+                  <input
+                    type="password"
+                    className="form-control"
+                    name="password"
+                    value={userData.password}
+                    onChange={handleChange}
+                    required
+                  />
+                </div>
 
-              <input
-             type="password"
-               className="form-control"
-                name="password"
-                value={userData.password}
-                onChange={handleChange}
-                placeholder="Enter password"
-                 />
-
-</div>
-
-
-
-                <button 
+                <button
+                  type="submit"
                   className="btn btn-success w-100"
                 >
                   Register
                 </button>
 
-
               </form>
-
 
             </div>
 
           </div>
 
-
         </div>
-
 
       </div>
 
-
     </div>
-
-  )
-}
+  );
+} 
