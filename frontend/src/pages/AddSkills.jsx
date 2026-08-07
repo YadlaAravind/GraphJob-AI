@@ -1,88 +1,74 @@
 import React, { useState } from "react";
 import axios from "axios";
 
-
 export default function AddSkills() {
 
-
-  const [skillData,setSkillData] = useState({
-    email:"",
-    skills:""
+  const [skillData, setSkillData] = useState({
+    email: "",
+    skills: ""
   });
 
+  const [message, setMessage] = useState("");
 
-  const [message,setMessage] = useState("");
+  function handleChange(e) {
 
-
-
-  function handleChange(e){
-
-    const {name,value} = e.target;
+    const { name, value } = e.target;
 
     setSkillData({
       ...skillData,
-      [name]:value
+      [name]: value
     });
-
   }
 
-
-
-  async function handleSubmit(e){
+  async function handleSubmit(e) {
 
     e.preventDefault();
 
-
-    try{
+    try {
 
       const response = await axios.post(
-        "http://127.0.0.1:5000/add-skills",
+        "https://graphjob-backend.onrender.com/add-skills",
         {
           email: skillData.email,
-          skills: skillData.skills.split(",")
+          skills: skillData.skills
+            .split(",")
+            .map(skill => skill.trim())
         }
       );
 
-
       console.log(response.data);
 
-      setMessage("Skills Added Successfully");
+      if (response.data.status === "success") {
+        setMessage("✅ Skills Added Successfully");
+      } else {
+        setMessage(response.data.message || "Failed to add skills");
+      }
 
+    } catch (error) {
 
-    }
-    catch(error){
+      console.error(error);
 
-      console.log(error);
-
-      setMessage("Failed to add skills");
+      setMessage("❌ Failed to add skills");
 
     }
 
   }
-
-
 
   return (
 
     <div className="container my-5">
 
-
       <div className="row justify-content-center">
-
 
         <div className="col-md-6">
 
-
           <div className="card shadow">
 
-
             <div className="card-body">
-
 
               <h3 className="text-center mb-4">
                 Add Skills
               </h3>
-
 
               {
                 message &&
@@ -91,10 +77,7 @@ export default function AddSkills() {
                 </div>
               }
 
-
-
               <form onSubmit={handleSubmit}>
-
 
                 <div className="mb-3">
 
@@ -109,11 +92,10 @@ export default function AddSkills() {
                     value={skillData.email}
                     onChange={handleChange}
                     placeholder="Enter email"
+                    required
                   />
 
                 </div>
-
-
 
                 <div className="mb-3">
 
@@ -128,34 +110,30 @@ export default function AddSkills() {
                     value={skillData.skills}
                     onChange={handleChange}
                     placeholder="Python, React, SQL"
+                    required
                   />
 
                 </div>
 
-
-
-                <button className="btn btn-primary w-100">
+                <button
+                  type="submit"
+                  className="btn btn-primary w-100"
+                >
                   Add Skills
                 </button>
 
-
               </form>
-
 
             </div>
 
-
           </div>
-
 
         </div>
 
-
       </div>
-
 
     </div>
 
-  )
+  );
 
 }
