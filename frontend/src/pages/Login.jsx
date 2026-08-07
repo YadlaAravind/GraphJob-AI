@@ -30,34 +30,27 @@ const navigate = useNavigate();
 
   e.preventDefault();
 
-
   try{
 
     const response = await axios.post(
-      "http://127.0.0.1:5000/login",
+      `${import.meta.env.VITE_API_URL}/login`,
       loginData
     );
 
-
     console.log(response.data);
 
-
     if(response.data.status === "success"){
-
 
       localStorage.setItem(
         "user",
         JSON.stringify(response.data.user)
       );
 
-
       alert("Login Successful");
-
 
       navigate("/recommendation");
 
     }
-
 
   }
   catch(error){
