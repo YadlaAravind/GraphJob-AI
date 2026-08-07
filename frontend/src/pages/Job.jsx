@@ -12,35 +12,34 @@ export default function Job() {
   }, []);
 
   async function getJobs() {
-
     try {
 
       const response = await axios.get(
-        "http://127.0.0.1:5000/jobs"
+        "https://graphjob-backend.onrender.com/jobs"
       );
 
-      // Debug
       console.log("Full Response:", response.data);
       console.log("Jobs:", response.data.jobs);
 
-      setJobs(response.data.jobs);
+      if (response.data.status === "success") {
+        setJobs(response.data.jobs);
+      } else {
+        setJobs([]);
+      }
 
-    } 
-    catch(error) {
+    } catch (error) {
 
-      console.log(error);
-      
-    }
-    finally {
+      console.error("Jobs Error:", error);
+      setJobs([]);
+
+    } finally {
 
       setLoading(false);
 
     }
-
   }
 
   return (
-
     <div className="container my-5">
 
       <h2 className="text-center mb-4">
@@ -81,7 +80,7 @@ export default function Job() {
                       </h5>
 
                       <p className="card-text">
-                        Company : {job.company}
+                        <strong>Company:</strong> {job.company}
                       </p>
 
                       <Link
@@ -106,6 +105,5 @@ export default function Job() {
       }
 
     </div>
-
   );
 }
