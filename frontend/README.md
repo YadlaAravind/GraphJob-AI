@@ -253,6 +253,13 @@ DATABASE_PASSWORD=YOUR_PASSWORD
 
 ---
 
+## 🎥 Demo Video
+
+Watch the project demo here:
+
+https://drive.google.com/file/d/1FRVTQp7R7MKSnUzWycPIQk5oZeKYlNWC/view?usp=sharing
+
+
 # Future Improvements
 
 - Resume Upload
