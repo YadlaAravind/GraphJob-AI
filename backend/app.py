@@ -3,10 +3,8 @@ from flask_cors import CORS
 from routes.jobs import jobs_bp
 from routes.users import users_bp
 from routes.recommendations import recommend_bp
-from database import verify_connection
 import os
 
-print(verify_connection())
 
 app = Flask(__name__)
 
@@ -28,5 +26,5 @@ def home():
 if __name__ == "__main__":
     app.run(
         host="0.0.0.0",
-        port=int(os.environ.get("PORT", 5000))
+        port=int(os.environ.get("PORT",5000))
     )
